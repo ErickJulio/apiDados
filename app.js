@@ -90,7 +90,7 @@ const doc = {
   },
   servers: [  
     {
-      url: 'http://teste-dados.onrender.com/api-docs/'
+      url: 'http://api-teste-dados.onrender.com'
     },
     {
       url: `http://localhost:${port}`
