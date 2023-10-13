@@ -5,13 +5,13 @@
     "version": "1.0.0",
     "description": ""
   },
-  "host": "localhost:3000",
+  "host": "http://teste-dados.onrender.com/api-docs/",
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://teste-dados.onrender.com/api-docs/"
     },
     {
-      "url": "http://teste-dados.onrender.com/api-docs/"
+      "url": "http://localhost:3000"
     }
   ],
   "basePath": "/",

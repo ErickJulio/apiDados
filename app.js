@@ -88,7 +88,7 @@ const doc = {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-  servers: [  //http://teste-dados.onrender.com/api-docs/
+  servers: [  
     {
       url: 'http://teste-dados.onrender.com/api-docs/'
     },
