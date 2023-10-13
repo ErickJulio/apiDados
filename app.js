@@ -9,7 +9,7 @@ const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '52018622
 const cors = require('cors'); // Importe o módulo cors
 
 const app = express();
-const port = 3000;
+const port = 'http://api-teste-dados.onrender.com';
 
 app.use(cors()); // Use o middleware cors
 
