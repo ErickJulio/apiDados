@@ -1,117 +1,66 @@
-{
-  "swagger": "2.0",
-  "info": {
-    "title": "Gerar Dados",
-    "version": "1.0.0",
-    "description": ""
-  },
-  "host": "http://teste-dados.onrender.com/api-docs/",
-  "servers": [
-    {
-      "url": "http://teste-dados.onrender.com/api-docs/"
-    },
-    {
-      "url": "http://localhost:3000"
-    }
-  ],
-  "basePath": "/",
-  "schemes": [
-    "http"
-  ],
-  "paths": {
-    "/gerar-dadosAleatorios": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/validar-cpf": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "cpf": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/validar-cep": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "cep": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/enviar-sms": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "to": {
-                  "example": "any"
-                },
-                "mensagem": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    }
-  }
-}
+swagger: '2.0'
+info:
+  title: Gerar Dados
+  version: 1.0.0
+  description: ''
+host: teste-dados.onrender.com
+basePath: /
+schemes:
+  - https
+paths:
+  /gerar-dadosAleatorios:
+    get:
+      description: ''
+      responses:
+        '200':
+          description: OK
+  /validar-cpf:
+    post:
+      description: ''
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              cpf:
+                example: any
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /validar-cep:
+    post:
+      description: ''
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              cep:
+                example: any
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /enviar-sms:
+    post:
+      description: ''
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              to:
+                example: any
+              mensagem:
+                example: any
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
