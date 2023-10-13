@@ -90,6 +90,7 @@ const doc = {
   },
       host: 'api-teste-dados.onrender.com',
       schemes: ['https']
+      description: 'Teste'
 };
 
 // Gere a documentação Swagger
