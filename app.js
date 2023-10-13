@@ -6,15 +6,17 @@ const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
 const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
-const cors = require('cors');
+const cors = require('cors'); // Importe o módulo cors
 
 const app = express();
+const port = 3000;
 
-app.use(cors());
+app.use(cors()); // Use o middleware cors
 
 app.use(express.json());
 app.use(bodyParser.json());
 
+// Gerar dados fictícios
 app.get('/gerar-dadosAleatorios', (req, res) => {
   const nome = faker.name.findName();
   const cpf = faker.random.number({ min: 10000000000, max: 99999999999 }).toString();
@@ -27,6 +29,7 @@ app.get('/gerar-dadosAleatorios', (req, res) => {
   });
 });
 
+// Validar CPF
 app.post('/validar-cpf', (req, res) => {
   const cpf = req.body.cpf;
 
@@ -41,6 +44,7 @@ app.post('/validar-cpf', (req, res) => {
   }
 });
 
+// Validar CEP
 app.post('/validar-cep', async (req, res) => {
   const cep = req.body.cep;
 
@@ -56,13 +60,14 @@ app.post('/validar-cep', async (req, res) => {
   }
 });
 
+// Enviar SMS
 app.post('/enviar-sms', (req, res) => {
   const { to, mensagem } = req.body;
 
   client.messages
     .create({
       body: mensagem,
-      from: '+12293744579',
+      from: '+12293744579', // Seu número Twilio
       to: to
     })
     .then(message => {
@@ -75,25 +80,35 @@ app.post('/enviar-sms', (req, res) => {
     });
 });
 
+// Defina a documentação Swagger
 const outputFile = './swagger-output.json';
-const endpointsFiles = [__filename];
+const endpointsFiles = [__filename]; // Use o caminho deste arquivo
 const doc = {
   info: {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-  servers: [
+  servers: [  //http://teste-dados.onrender.com/api-docs/
     {
-      url: 'https://api-teste-dados.onrender.com/api-docs'
+      url: 'http://teste-dados.onrender.com/api-docs/'
+    },
+    {
+      url: `http://localhost:${port}`
     }
   ]
 };
 
+// Gere a documentação Swagger
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
   const swaggerDocument = require(outputFile);
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+  // Adicione uma rota raiz para a documentação Swagger
   app.get('/', (req, res) => {
     res.redirect('/api-docs');
+  });
+
+  app.listen(port, () => {
+    console.log('API rodando em http://teste-dados.onrender.com/api-docs');
   });
 });
