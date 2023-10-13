@@ -93,7 +93,7 @@ const doc = {
       url: 'http://api-teste-dados.onrender.com'
     },
     {
-      url: `http://localhost:${port}`
+      url: 'http://api-teste-dados.onrender.com'
     }
   ]
 };
