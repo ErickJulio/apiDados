@@ -88,7 +88,7 @@ const doc = {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-      host: 'http://api-teste-dados.onrender.com',
+      host: 'api-teste-dados.onrender.com',
       schemes: ['http']
 };
 
