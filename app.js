@@ -88,7 +88,7 @@ const doc = {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-  host: `localhost:${port}`
+  host: `https://api-teste-dados.onrender.com`
 };
 
 // Gere a documentação Swagger
@@ -102,6 +102,6 @@ swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
   });
 
   app.listen(port, () => {
-    console.log(`API rodando em http://localhost:${port}`);
+    console.log(`API rodando em https://api-teste-dados.onrender.com);
   });
 });
