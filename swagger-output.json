@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "description": ""
   },
-  "host": "api-teste-dados.onrender.com",
+  "host": "https://api-teste-dados.onrender.com/",
   "basePath": "/",
   "schemes": ["http"],
   "paths": {
