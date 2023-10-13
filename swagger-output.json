@@ -8,15 +8,12 @@
   "host": "teste-dados.onrender.com",
   "servers": [
     {
-      "url": "http://teste-dados.onrender.com/api-docs/"
-    },
-    {
-      "url": "http://localhost:3000"
+      "url": "https://teste-dados.onrender.com/api-docs/"
     }
   ],
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/gerar-dadosAleatorios": {
