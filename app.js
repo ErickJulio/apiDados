@@ -89,7 +89,7 @@ const doc = {
     version: '1.0.0'
   },
       host: 'api-teste-dados.onrender.com',
-      schemes: ['http']
+      schemes: ['https']
 };
 
 // Gere a documentação Swagger
