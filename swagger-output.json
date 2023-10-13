@@ -6,8 +6,8 @@
     "description": "Teste"
   },
   "host": "https://api-teste-dados.onrender.com/",
-  "basePath": "/",
-  "schemes": ["http"],
+  "basePath": "Teste",
+  "schemes": ["https"],
   "paths": {
     "/gerar-dadosAleatorios": {
       "get": {
