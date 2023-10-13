@@ -5,9 +5,9 @@
     "version": "1.0.0",
     "description": ""
   },
-  "host": "teste-dados.onrender.com",
+  "host": "api-teste-dados.onrender.com",
   "basePath": "/",
-  "schemes": ["https"],
+  "schemes": ["http"],
   "paths": {
     "/gerar-dadosAleatorios": {
       "get": {
