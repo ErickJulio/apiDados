@@ -88,14 +88,8 @@ const doc = {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-  servers: [  
-    {
-      url: 'http://api-teste-dados.onrender.com'
-    },
-    {
-      url: 'localhost:3000'
-    }
-  ]
+      host: 'http://api-teste-dados.onrender.com',
+      schemes: ['http']
 };
 
 // Gere a documentação Swagger
