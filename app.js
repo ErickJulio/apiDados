@@ -5,7 +5,7 @@ const swaggerAutogen = require('swagger-autogen')();
 const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
-const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
+const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '5201862225e53fdc8af97ad1f8677d0f');
 const cors = require('cors'); // Importe o módulo cors
 
 const app = express();
