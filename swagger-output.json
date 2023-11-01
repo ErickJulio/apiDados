@@ -3,11 +3,21 @@
   "info": {
     "title": "Gerar Dados",
     "version": "1.0.0",
-    "description": "Teste"
+    "description": ""
   },
-  "host": "https://api-teste-dados.onrender.com/",
-  "basePath": "Teste",
-  "schemes": ["https"],
+  "host": "localhost:3000",
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    },
+    {
+      "url": "http://teste-dados.onrender.com/api-docs/"
+    }
+  ],
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/gerar-dadosAleatorios": {
       "get": {
@@ -99,6 +109,39 @@
           },
           "400": {
             "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "usuario": {
+                  "example": "any"
+                },
+                "senha": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }

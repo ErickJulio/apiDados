@@ -5,13 +5,16 @@ const swaggerAutogen = require('swagger-autogen')();
 const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
-const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', 'e50aeaaba628cfb55e8852a5ae292ac4');
+const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
 const cors = require('cors'); // Importe o módulo cors
+const usuariosFixos = [
+  { usuario: "ErickJulio", senha: "123456" },
+];
 
 const app = express();
 const port = 3000;
 
-app.use(cors()); 
+app.use(cors()); // Use o middleware cors
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -78,6 +81,24 @@ app.post('/enviar-sms', (req, res) => {
       console.error('Erro ao enviar SMS:', error);
       res.status(400).json({ erro: 'Erro ao enviar SMS' });
     });
+});
+
+app.post('/login', (req, res) => {
+  const { usuario, senha } = req.body;
+
+  if (!usuario || !senha) {
+    return res.status(400).json({ mensagem: 'Informe usuário e senha' });
+  }
+
+  const usuarioEncontrado = usuariosFixos.find(u => u.usuario === usuario && u.senha === senha);
+
+  if (usuarioEncontrado) {
+    // Autenticação bem-sucedida
+    res.status(200).json({ mensagem: 'Login bem-sucedido' });
+  } else {
+    // Falha na autenticação
+    res.status(401).json({ mensagem: 'Credenciais inválidas' });
+  }
 });
 
 // Defina a documentação Swagger
