@@ -9,6 +9,8 @@ const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33
 const cors = require('cors'); // Importe o módulo cors
 const usuariosFixos = [
   { usuario: "ErickJulio", senha: "123456" },
+  { usuario: "Teste", senha: "123456"},
+  {usuario: "Admin", senha: "123456"},
 ];
 
 const app = express();
