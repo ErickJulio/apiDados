@@ -5,14 +5,19 @@ const swaggerAutogen = require('swagger-autogen')();
 const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
-const { MongoClient } = require('mongodb');
-const clientTwilio = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
-const cors = require('cors');
+const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
+const cors = require('cors'); // Importe o módulo cors
+const usuariosFixos = [
+  { usuario: "ErickJulio", senha: "123456" },
+  { usuario: "Teste", senha: "123456"},
+  {usuario: "Admin", senha: "123456"},
+];
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
-app.use(cors());
+app.use(cors()); // Use o middleware cors
+
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -64,10 +69,10 @@ app.post('/validar-cep', async (req, res) => {
 app.post('/enviar-sms', (req, res) => {
   const { to, mensagem } = req.body;
 
-  clientTwilio.messages
+  client.messages
     .create({
       body: mensagem,
-      from: '+12293744579',
+      from: '+12293744579', // Seu número Twilio
       to: to
     })
     .then(message => {
@@ -80,49 +85,23 @@ app.post('/enviar-sms', (req, res) => {
     });
 });
 
-// Conexão com o MongoDB
-const uri = 'mongodb+srv://seu_usuario:sua_senha@cluster0.urwvhty.mongodb.net/seu_banco_de_dados'; // URL de conexão com o MongoDB
-const dbName = 'cadastro'; // Nome do seu banco de dados
-const collectionName = 'cadastroApi'; // Nome da coleção a ser consultada
+app.post('/login', (req, res) => {
+  const { usuario, senha } = req.body;
 
-// Endpoint para inserir um novo usuário no MongoDB
-app.post('/inserir-usuario', async (req, res) => {
-  const { login, senha, telefone, endereco } = req.body;
-
-  if (!login || !senha) {
+  if (!usuario || !senha) {
     return res.status(400).json({ mensagem: 'Informe usuário e senha' });
   }
 
-  const novoUsuario = {
-    login: login,
-    senha: senha,
-    telefone: telefone || null,
-    endereco: endereco || null
-  };
+  const usuarioEncontrado = usuariosFixos.find(u => u.usuario === usuario && u.senha === senha);
 
-  const clientMongo = new MongoClient(uri, { useUnifiedTopology: true });
-
-  try {
-    await clientMongo.connect();
-    const db = clientMongo.db(dbName);
-    const collection = db.collection(collectionName);
-
-    const resultado = await collection.insertOne(novoUsuario);
-
-    if (resultado.insertedId) {
-      res.status(201).json({ mensagem: 'Usuário inserido com sucesso', _id: resultado.insertedId });
-    } else {
-      res.status(500).json({ mensagem: 'Falha ao inserir usuário' });
-    }
-  } catch (error) {
-    console.error('Erro ao inserir usuário:', error);
-    res.status(500).json({ mensagem: 'Erro interno do servidor' });
-  } finally {
-    clientMongo.close();
+  if (usuarioEncontrado) {
+    // Autenticação bem-sucedida
+    res.status(200).json({ mensagem: 'Login bem-sucedido' });
+  } else {
+    // Falha na autenticação
+    res.status(401).json({ mensagem: 'Credenciais inválidas' });
   }
 });
-
-// ... Outras rotas e configurações ...
 
 // Defina a documentação Swagger
 const outputFile = './swagger-output.json';
