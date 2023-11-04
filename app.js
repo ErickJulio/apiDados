@@ -6,11 +6,11 @@ const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
-const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
+const clientTwilio = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -64,7 +64,7 @@ app.post('/validar-cep', async (req, res) => {
 app.post('/enviar-sms', (req, res) => {
   const { to, mensagem } = req.body;
 
-  client.messages
+  clientTwilio.messages
     .create({
       body: mensagem,
       from: '+12293744579',
@@ -81,7 +81,7 @@ app.post('/enviar-sms', (req, res) => {
 });
 
 // Conexão com o MongoDB
-const uri = 'mongodb+srv://erickcadastro:lembre@2022@cluster0.urwvhty.mongodb.net/?retryWrites=true&w=majority'; // URL de conexão com o MongoDB
+const uri = 'mongodb+srv://seu_usuario:sua_senha@cluster0.urwvhty.mongodb.net/seu_banco_de_dados'; // URL de conexão com o MongoDB
 const dbName = 'cadastro'; // Nome do seu banco de dados
 const collectionName = 'cadastroApi'; // Nome da coleção a ser consultada
 
@@ -100,11 +100,11 @@ app.post('/inserir-usuario', async (req, res) => {
     endereco: endereco || null
   };
 
-  const client = new MongoClient(uri, { useUnifiedTopology: true });
+  const clientMongo = new MongoClient(uri, { useUnifiedTopology: true });
 
   try {
-    await client.connect();
-    const db = client.db(dbName);
+    await clientMongo.connect();
+    const db = clientMongo.db(dbName);
     const collection = db.collection(collectionName);
 
     const resultado = await collection.insertOne(novoUsuario);
@@ -118,7 +118,7 @@ app.post('/inserir-usuario', async (req, res) => {
     console.error('Erro ao inserir usuário:', error);
     res.status(500).json({ mensagem: 'Erro interno do servidor' });
   } finally {
-    client.close();
+    clientMongo.close();
   }
 });
 
@@ -126,15 +126,15 @@ app.post('/inserir-usuario', async (req, res) => {
 
 // Defina a documentação Swagger
 const outputFile = './swagger-output.json';
-const endpointsFiles = [__filename];
+const endpointsFiles = [__filename]; // Use o caminho deste arquivo
 const doc = {
   info: {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-  host: 'localhost:3000', // Atualize para a sua URL local
-  schemes: ['http'],
-  description: 'Teste'
+      host: 'api-teste-dados.onrender.com',
+      schemes: ['https'],
+      description: 'Teste'
 };
 
 // Gere a documentação Swagger
@@ -142,11 +142,12 @@ swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
   const swaggerDocument = require(outputFile);
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+  // Adicione uma rota raiz para a documentação Swagger
   app.get('/', (req, res) => {
     res.redirect('/api-docs');
   });
 
   app.listen(port, () => {
-    console.log('API rodando em http://localhost:3000/api-docs'); // Atualize a mensagem
+    console.log('API rodando em http://teste-dados.onrender.com/api-docs');
   });
 });
