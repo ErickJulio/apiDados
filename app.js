@@ -5,19 +5,14 @@ const swaggerAutogen = require('swagger-autogen')();
 const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
+const { MongoClient } = require('mongodb');
 const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
-const cors = require('cors'); // Importe o módulo cors
-const usuariosFixos = [
-  { usuario: "ErickJulio", senha: "123456" },
-  { usuario: "Teste", senha: "123456"},
-  {usuario: "Admin", senha: "123456"},
-];
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 
-app.use(cors()); // Use o middleware cors
-
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -72,7 +67,7 @@ app.post('/enviar-sms', (req, res) => {
   client.messages
     .create({
       body: mensagem,
-      from: '+12293744579', // Seu número Twilio
+      from: '+12293744579',
       to: to
     })
     .then(message => {
@@ -85,35 +80,61 @@ app.post('/enviar-sms', (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
-  const { usuario, senha } = req.body;
+// Conexão com o MongoDB
+const uri = 'mongodb+srv://erickwiejulio:Lembre@2022@cluster0.8bfrcll.mongodb.net/?retryWrites=true&w=majority'; // URL de conexão com o MongoDB
+const dbName = 'usuarios'; // Nome do seu banco de dados
+const collectionName = 'teste'; // Nome da coleção a ser consultada
 
-  if (!usuario || !senha) {
+// Endpoint para inserir um novo usuário no MongoDB
+app.post('/inserir-usuario', async (req, res) => {
+  const { login, senha, telefone, endereco } = req.body;
+
+  if (!login || !senha) {
     return res.status(400).json({ mensagem: 'Informe usuário e senha' });
   }
 
-  const usuarioEncontrado = usuariosFixos.find(u => u.usuario === usuario && u.senha === senha);
+  const novoUsuario = {
+    login: login,
+    senha: senha,
+    telefone: telefone || null,
+    endereco: endereco || null
+  };
 
-  if (usuarioEncontrado) {
-    // Autenticação bem-sucedida
-    res.status(200).json({ mensagem: 'Login bem-sucedido' });
-  } else {
-    // Falha na autenticação
-    res.status(401).json({ mensagem: 'Credenciais inválidas' });
+  const client = new MongoClient(uri, { useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+
+    const resultado = await collection.insertOne(novoUsuario);
+
+    if (resultado.insertedId) {
+      res.status(201).json({ mensagem: 'Usuário inserido com sucesso', _id: resultado.insertedId });
+    } else {
+      res.status(500).json({ mensagem: 'Falha ao inserir usuário' });
+    }
+  } catch (error) {
+    console.error('Erro ao inserir usuário:', error);
+    res.status(500).json({ mensagem: 'Erro interno do servidor' });
+  } finally {
+    client.close();
   }
 });
 
+// ... Outras rotas e configurações ...
+
 // Defina a documentação Swagger
 const outputFile = './swagger-output.json';
-const endpointsFiles = [__filename]; // Use o caminho deste arquivo
+const endpointsFiles = [__filename];
 const doc = {
   info: {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-      host: 'api-teste-dados.onrender.com',
-      schemes: ['https'],
-      description: 'Teste'
+  host: 'localhost:3000', // Atualize para a sua URL local
+  schemes: ['http'],
+  description: 'Teste'
 };
 
 // Gere a documentação Swagger
@@ -121,12 +142,11 @@ swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
   const swaggerDocument = require(outputFile);
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-  // Adicione uma rota raiz para a documentação Swagger
   app.get('/', (req, res) => {
     res.redirect('/api-docs');
   });
 
   app.listen(port, () => {
-    console.log('API rodando em http://teste-dados.onrender.com/api-docs');
+    console.log('API rodando em http://localhost:3000/api-docs'); // Atualize a mensagem
   });
 });
