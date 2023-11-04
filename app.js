@@ -81,9 +81,9 @@ app.post('/enviar-sms', (req, res) => {
 });
 
 // Conexão com o MongoDB
-const uri = 'mongodb+srv://erickwiejulio:Lembre@2022@cluster0.8bfrcll.mongodb.net/?retryWrites=true&w=majority'; // URL de conexão com o MongoDB
-const dbName = 'usuarios'; // Nome do seu banco de dados
-const collectionName = 'teste'; // Nome da coleção a ser consultada
+const uri = 'mongodb+srv://erickcadastro:lembre@2022@cluster0.urwvhty.mongodb.net/?retryWrites=true&w=majority'; // URL de conexão com o MongoDB
+const dbName = 'cadastro'; // Nome do seu banco de dados
+const collectionName = 'cadastroApi'; // Nome da coleção a ser consultada
 
 // Endpoint para inserir um novo usuário no MongoDB
 app.post('/inserir-usuario', async (req, res) => {
