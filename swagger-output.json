@@ -144,7 +144,14 @@
             "description": "Bad Request - Requisição inválida"
           },
           "401": {
-            "description": "Unauthorized - Usuário não encontrado, solicitar cadastro"
+            "description": "Unauthorized - Usuário não encontrado, solicitar cadastro, ou senha incorreta",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Senha incorreta."
+                }
+              }
+            }
           }
         }
       }

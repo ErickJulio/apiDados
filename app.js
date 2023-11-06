@@ -83,6 +83,7 @@ app.post('/enviar-sms', (req, res) => {
 });
 
 // Rota para verificar o login e senha
+// Rota para verificar o login e senha
 app.post('/login', async (req, res) => {
   const { login, senha } = req.body;
 
@@ -90,15 +91,18 @@ app.post('/login', async (req, res) => {
   await client.connect();
 
   try {
-    const query = 'SELECT login, senha FROM cadastro_user WHERE login = $1 AND senha = $2';
-    const result = await client.query(query, [login, senha]);
+    const query = 'SELECT login, senha FROM cadastro_user WHERE login = $1';
+    const result = await client.query(query, [login]);
 
-    if (result.rows.length > 0) {
-      // Usuário encontrado, você pode autenticar o usuário aqui
-      res.json({ message: 'Login bem-sucedido!' });
-    } else {
+    if (result.rows.length === 0) {
       // Usuário não encontrado, solicite o cadastro
       res.status(401).json({ message: 'Usuário não encontrado. Por favor, cadastre-se.' });
+    } else if (result.rows[0].senha !== senha) {
+      // Senha incorreta
+      res.status(401).json({ message: 'Senha incorreta.' });
+    } else {
+      // Usuário encontrado e senha correta, você pode autenticar o usuário aqui
+      res.json({ message: 'Login bem-sucedido!' });
     }
   } catch (error) {
     console.error('Erro na consulta:', error);
@@ -107,6 +111,7 @@ app.post('/login', async (req, res) => {
     await client.end();
   }
 });
+
 // Defina a documentação Swagger
 const outputFile = './swagger-output.json';
 const endpointsFiles = [__filename]; // Use o caminho deste arquivo
