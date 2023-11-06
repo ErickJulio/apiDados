@@ -145,6 +145,69 @@
           }
         }
       }
+    },
+    "/inserir-dados": {
+      "post": {
+        "description": "Inserir dados na tabela 'cadastro_user'",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "type": "string",
+                  "example": "exemplo_de_login"
+                },
+                "senha": {
+                  "type": "string",
+                  "example": "exemplo_de_senha"
+                },
+                "ddd": {
+                  "type": "string",
+                  "example": "exemplo_de_ddd"
+                },
+                "celular": {
+                  "type": "string",
+                  "example": "exemplo_de_celular"
+                },
+                "rua": {
+                  "type": "string",
+                  "example": "exemplo_de_rua"
+                },
+                "numero": {
+                  "type": "string",
+                  "example": "exemplo_de_numero"
+                },
+                "cep": {
+                  "type": "string",
+                  "example": "exemplo_de_cep"
+                },
+                "cidade": {
+                  "type": "string",
+                  "example": "exemplo_de_cidade"
+                },
+                "estado": {
+                  "type": "string",
+                  "example": "exemplo_de_estado"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   }
 }

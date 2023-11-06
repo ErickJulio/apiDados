@@ -6,7 +6,8 @@ const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
 const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
-const cors = require('cors'); // Importe o módulo cors
+const cors = require('cors'); 
+const pgp = require('pg-promise')();
 const usuariosFixos = [
   { usuario: "ErickJulio", senha: "123456" },
   { usuario: "Teste", senha: "123456"},
@@ -116,6 +117,39 @@ const doc = {
       description: 'Teste'
 };
 
+// Configuração do banco de dados PostgreSQL
+const dbConfig = {
+  host: 'motty.db.elephantsql.com',
+  database: 'qfjzpbuq',
+  user: 'qfjzpbuq',
+  password: 'GSsKmhQ-QHHNhgDrACUZXLmCqyjEhr8d'
+};
+
+const db = pgp(dbConfig);
+
+app.use(cors());
+app.use(express.json());
+app.use(bodyParser.json());
+
+// Rota para inserir dados no banco de dados
+app.post('/inserir-dados', async (req, res) => {
+  try {
+    const { login, senha, ddd, celular, rua, numero, cep, cidade, estado } = req.body;
+
+    if (!login || !senha || !ddd || !celular || !rua || !numero || !cep || !cidade || !estado) {
+      return res.status(400).json({ mensagem: 'Campos obrigatórios estão faltando' });
+    }
+
+    // Executa a consulta SQL para inserção de dados
+    const insertQuery = `INSERT INTO cadastro_user (login, senha, ddd, celular, rua, numero, cep, cidade, estado) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+    await db.none(insertQuery, [login, senha, ddd, celular, rua, numero, cep, cidade, estado]);
+
+    res.status(200).json({ mensagem: 'Dados inseridos com sucesso' });
+  } catch (error) {
+    console.error('Erro ao inserir dados:', error);
+    res.status(500).json({ erro: 'Erro ao inserir dados' });
+  }
+});
 // Gere a documentação Swagger
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
   const swaggerDocument = require(outputFile);
