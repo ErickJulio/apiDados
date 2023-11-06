@@ -115,7 +115,8 @@
     },
     "/login": {
       "post": {
-        "description": "",
+        "summary": "Endpoint para verificar login e senha",
+        "description": "Este endpoint permite verificar o login e senha do usuário e, se não estiver cadastrado, solicitar o cadastro.",
         "parameters": [
           {
             "name": "body",
@@ -123,11 +124,13 @@
             "schema": {
               "type": "object",
               "properties": {
-                "usuario": {
-                  "example": "any"
+                "login": {
+                  "type": "string",
+                  "example": "seu_login"
                 },
                 "senha": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "sua_senha"
                 }
               }
             }
@@ -135,17 +138,18 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK - Login bem-sucedido"
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request - Requisição inválida"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized - Usuário não encontrado, solicitar cadastro"
           }
         }
       }
     },
+    
     "/inserir-dados": {
       "post": {
         "description": "Inserir dados na tabela 'cadastro_user'",

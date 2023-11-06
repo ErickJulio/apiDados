@@ -86,24 +86,31 @@ app.post('/enviar-sms', (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
-  const { usuario, senha } = req.body;
+// Rota para verificar o login e senha
+app.post('/login', async (req, res) => {
+  const { login, senha } = req.body;
 
-  if (!usuario || !senha) {
-    return res.status(400).json({ mensagem: 'Informe usuário e senha' });
-  }
+  const client = new Client(dbConfig);
+  await client.connect();
 
-  const usuarioEncontrado = usuariosFixos.find(u => u.usuario === usuario && u.senha === senha);
+  try {
+    const query = 'SELECT login, senha FROM cadastro_user WHERE login = $1 AND senha = $2';
+    const result = await client.query(query, [login, senha]);
 
-  if (usuarioEncontrado) {
-    // Autenticação bem-sucedida
-    res.status(200).json({ mensagem: 'Login bem-sucedido' });
-  } else {
-    // Falha na autenticação
-    res.status(401).json({ mensagem: 'Credenciais inválidas' });
+    if (result.rows.length > 0) {
+      // Usuário encontrado, você pode autenticar o usuário aqui
+      res.json({ message: 'Login bem-sucedido!' });
+    } else {
+      // Usuário não encontrado, solicite o cadastro
+      res.status(401).json({ message: 'Usuário não encontrado. Por favor, cadastre-se.' });
+    }
+  } catch (error) {
+    console.error('Erro na consulta:', error);
+    res.status(500).json({ message: 'Erro no servidor' });
+  } finally {
+    await client.end();
   }
 });
-
 // Defina a documentação Swagger
 const outputFile = './swagger-output.json';
 const endpointsFiles = [__filename]; // Use o caminho deste arquivo
