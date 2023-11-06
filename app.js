@@ -8,11 +8,7 @@ const bodyParser = require('body-parser');
 const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
 const cors = require('cors'); 
 const pgp = require('pg-promise')();
-const usuariosFixos = [
-  { usuario: "ErickJulio", senha: "123456" },
-  { usuario: "Teste", senha: "123456"},
-  {usuario: "Admin", senha: "123456"},
-];
+const { Client } = require('pg');
 
 const app = express();
 const port = 3000;
