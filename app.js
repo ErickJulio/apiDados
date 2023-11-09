@@ -83,7 +83,6 @@ app.post('/enviar-sms', (req, res) => {
 });
 
 // Rota para verificar o login e senha
-// Rota para verificar o login e senha
 app.post('/login', async (req, res) => {
   const { login, senha } = req.body;
 
@@ -110,6 +109,22 @@ app.post('/login', async (req, res) => {
   } finally {
     await client.end();
   }
+});
+
+
+// Endpoint para esqueci a senha
+app.post('/esqueci-senha', (req, res) => {
+  const { login } = req.body;
+  connection.query('SELECT * FROM cadastro_user WHERE login = ?', [login], (error, results) => {
+    if (error) {
+      return res.status(500).json({ message: 'Erro ao consultar o banco de dados' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Login não encontrado' });
+    }
+
+    res.json({ message: 'Senha pode ser alterada.' });
+  });
 });
 
 // Defina a documentação Swagger
