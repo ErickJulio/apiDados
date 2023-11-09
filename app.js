@@ -9,6 +9,7 @@ const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33
 const cors = require('cors'); 
 const pgp = require('pg-promise')();
 const { Client } = require('pg');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 3000;
@@ -113,20 +114,33 @@ app.post('/login', async (req, res) => {
 
 
 // Endpoint para esqueci a senha
-app.post('/esqueci-senha', (req, res) => {
-  const { login } = req.body;
-  connection.query('SELECT * FROM cadastro_user WHERE login = ?', [login], (error, results) => {
-    if (error) {
-      return res.status(500).json({ message: 'Erro ao consultar o banco de dados' });
-    }
-    if (results.length === 0) {
+app.post('/esqueci-senha', async (req, res) => {
+  const { login, senha, confirmarSenha } = req.body;
+
+  // Verifica se a senha e a confirmação de senha coincidem
+  if (senha !== confirmarSenha) {
+    return res.status(400).json({ message: 'Senha e confirmação de senha não coincidem.' });
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM cadastro_user WHERE login = $1', [login]);
+
+    if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Login não encontrado' });
     }
 
-    res.json({ message: 'Senha pode ser alterada.' });
-  });
-});
+    // Hash da senha antes de armazenar no banco de dados
+    const hashedSenha = await bcrypt.hash(senha, 10);
 
+    // Lógica para atualizar a senha no banco de dados
+    await pool.query('UPDATE cadastro_user SET senha = $1 WHERE login = $2', [hashedSenha, login]);
+
+    res.json({ message: 'Senha alterada com sucesso.' });
+  } catch (error) {
+    console.error('Erro ao consultar ou atualizar o banco de dados:', error);
+    res.status(500).json({ message: 'Erro ao consultar ou atualizar o banco de dados' });
+  }
+});
 // Defina a documentação Swagger
 const outputFile = './swagger-output.json';
 const endpointsFiles = [__filename]; // Use o caminho deste arquivo
