@@ -242,7 +242,8 @@
                   "type": "string",
                   "example": "nova_senha"
                 }
-              }
+              },
+              "required": ["login", "senha", "confirmarSenha"]
             }
           }
         ],
@@ -251,16 +252,38 @@
             "description": "OK - Solicitação de recuperação de senha bem-sucedida. A senha foi alterada com sucesso."
           },
           "400": {
-            "description": "Bad Request - Senha e confirmação de senha não coincidem."
+            "description": "Bad Request - Senha e confirmação de senha não coincidem.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Senha e confirmação de senha não coincidem."
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found - Login não encontrado"
+            "description": "Not Found - Login não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Login não encontrado"
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error - Erro ao consultar ou atualizar o banco de dados"
+            "description": "Internal Server Error - Erro ao consultar ou atualizar o banco de dados",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Erro ao consultar ou atualizar o banco de dados"
+                }
+              }
+            }
           }
         }
       }
     }
   }
 }
+    
