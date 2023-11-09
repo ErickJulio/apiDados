@@ -158,43 +158,42 @@ app.post('/inserir-dados', async (req, res) => {
     console.error('Erro ao inserir dados:', error);
     res.status(500).json({ erro: 'Erro ao inserir dados' });
   }
+});
+app.post('/esqueci-senha', async (req, res) => {
+  const { login, senha, confirmarSenha } = req.body;
 
-  app.post('/esqueci-senha', async (req, res) => {
-    const { login, senha, confirmarSenha } = req.body;
-  
-    // Verifica se a senha e a confirmação de senha coincidem
-    if (senha !== confirmarSenha) {
-      return res.status(400).json({ message: 'Senha e confirmação de senha não coincidem.' });
+  // Verifica se a senha e a confirmação de senha coincidem
+  if (senha !== confirmarSenha) {
+    return res.status(400).json({ message: 'Senha e confirmação de senha não coincidem.' });
+  }
+
+  try {
+    const result = await pool.query('SELECT login, senha FROM cadastro_user WHERE login = $1', [login]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Login não encontrado' });
     }
-  
-    try {
-      const result = await pool.query('SELECT login, senha FROM cadastro_user WHERE login = $1', [login]);
-  
-      if (result.rows.length === 0) {
-        return res.status(404).json({ message: 'Login não encontrado' });
-      }
-  
-      const user = result.rows[0];
-      
-      // Verifica se a senha fornecida coincide com a senha no banco de dados
-      const senhaCorrespondente = await bcrypt.compare(senha, user.senha);
-  
-      if (!senhaCorrespondente) {
-        return res.status(401).json({ message: 'Senha incorreta.' });
-      }
-  
-      // Hash da nova senha antes de armazenar no banco de dados
-      const hashedNovaSenha = await bcrypt.hash(senha, 10);
-  
-      // Lógica para atualizar a senha no banco de dados
-      await pool.query('UPDATE cadastro_user SET senha = $1 WHERE login = $2', [hashedNovaSenha, login]);
-  
-      res.json({ message: 'Senha alterada com sucesso.' });
-    } catch (error) {
-      console.error('Erro ao consultar ou atualizar o banco de dados:', error);
-      res.status(500).json({ message: 'Erro ao consultar ou atualizar o banco de dados' });
+
+    const user = result.rows[0];
+    
+    // Verifica se a senha fornecida coincide com a senha no banco de dados
+    const senhaCorrespondente = await bcrypt.compare(senha, user.senha);
+
+    if (!senhaCorrespondente) {
+      return res.status(401).json({ message: 'Senha incorreta.' });
     }
-  });
+
+    // Hash da nova senha antes de armazenar no banco de dados
+    const hashedNovaSenha = await bcrypt.hash(senha, 10);
+
+    // Lógica para atualizar a senha no banco de dados
+    await pool.query('UPDATE cadastro_user SET senha = $1 WHERE login = $2', [hashedNovaSenha, login]);
+
+    res.json({ message: 'Senha alterada com sucesso.' });
+  } catch (error) {
+    console.error('Erro ao consultar ou atualizar o banco de dados:', error);
+    res.status(500).json({ message: 'Erro ao consultar ou atualizar o banco de dados' });
+  }
 });
 
 // Gere a documentação Swagger
