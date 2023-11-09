@@ -168,22 +168,27 @@ app.post('/esqueci-senha', async (req, res) => {
     return res.status(400).json({ message: 'Senha e confirmação de senha não coincidem.' });
   }
 
+  const db = pgp(dbConfig);
+
   try {
     // Consulta o login na tabela cadastro_user
-    const result = await pool.query('SELECT login FROM cadastro_user WHERE login = $1', [login]);
+    const result = await db.query('SELECT login FROM cadastro_user WHERE login = $1', [login]);
 
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       return res.status(404).json({ message: 'Login não encontrado' });
     }
 
     // Atualiza a senha no banco de dados
     const hashedNovaSenha = await bcrypt.hash(senha, 10);
-    await pool.query('UPDATE cadastro_user SET senha = $1 WHERE login = $2', [hashedNovaSenha, login]);
+    await db.query('UPDATE cadastro_user SET senha = $1 WHERE login = $2', [hashedNovaSenha, login]);
 
     res.json({ message: 'Senha alterada com sucesso.' });
   } catch (error) {
     console.error('Erro ao consultar ou atualizar o banco de dados:', error);
     res.status(500).json({ message: 'Erro ao consultar ou atualizar o banco de dados' });
+  } finally {
+    // Fecha a conexão com o banco de dados
+    db.$pool.end();
   }
 });
 
