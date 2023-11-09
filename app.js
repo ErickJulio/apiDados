@@ -88,28 +88,35 @@ app.post('/enviar-sms', (req, res) => {
 app.post('/login', async (req, res) => {
   const { login, senha } = req.body;
 
-  const client = new Client(dbConfig);
-  await client.connect();
+  const db = pgp(dbConfig);
 
   try {
-    const query = 'SELECT login, senha FROM cadastro_user WHERE login = $1';
-    const result = await client.query(query, [login]);
+    // Consulta o login e a senha hash na tabela cadastro_user
+    const result = await db.query('SELECT login, senha FROM cadastro_user WHERE login = $1', [login]);
 
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       // Usuário não encontrado, solicite o cadastro
       res.status(401).json({ message: 'Usuário não encontrado. Por favor, cadastre-se.' });
-    } else if (result.rows[0].senha !== senha) {
-      // Senha incorreta
-      res.status(401).json({ message: 'Senha incorreta.' });
     } else {
-      // Usuário encontrado e senha correta, você pode autenticar o usuário aqui
-      res.json({ message: 'Login bem-sucedido!' });
+      const user = result[0];
+
+      // Verifica a senha usando bcrypt
+      const senhaCorrespondente = await bcrypt.compare(senha, user.senha);
+
+      if (!senhaCorrespondente) {
+        // Senha incorreta
+        res.status(401).json({ message: 'Senha incorreta.' });
+      } else {
+        // Usuário encontrado e senha correta, você pode autenticar o usuário aqui
+        res.json({ message: 'Login bem-sucedido!' });
+      }
     }
   } catch (error) {
     console.error('Erro na consulta:', error);
     res.status(500).json({ message: 'Erro no servidor' });
   } finally {
-    await client.end();
+    // Fecha a conexão com o banco de dados
+    db.$pool.end();
   }
 });
 
