@@ -238,7 +238,7 @@ app.post('/api/agendamentos', async (req, res) => {
     console.log('Procedimento Desejado:', procedimento_desejado);
 
     // Envie uma resposta de sucesso para o cliente
-    res.status(200).json({ mensagem: 'Agendamento inserido com sucesso!' });
+    res.status(200).json({ mensagem: 'Agendamento solicitado com sucesso!' });
   } catch (error) {
     console.error('Erro ao inserir no banco de dados:', error.message);
     res.status(500).json({ mensagem: 'Erro interno do servidor' });
