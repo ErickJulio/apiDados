@@ -316,6 +316,16 @@
           }
         }
       },
+      "404": {
+        "description": "Not Found - Usuário não encontrado",
+        "content": {
+          "application/json": {
+            "example": {
+              "message": "Usuário não encontrado. Verifique o login informado."
+            }
+          }
+        }
+      },
       "500": {
         "description": "Erro interno do servidor",
         "content": {
