@@ -233,10 +233,9 @@ app.post('/api/agendamentos', async (req, res) => {
     res.status(200).json({ mensagem: 'Agendamento inserido com sucesso!' });
   } catch (error) {
     console.error('Erro ao inserir no banco de dados:', error.message);
-    res.status(500).json({ mensagem: 'Erro interno do servidor' });
+    res.status(404).json({ mensagem: 'Usuário não encontrado. Verifique o login informado.' });
   }
 });
-
 
 // Gere a documentação Swagger
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
