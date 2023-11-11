@@ -10,7 +10,7 @@ const cors = require('cors');
 const pgp = require('pg-promise')();
 const { Client } = require('pg');
 const bcrypt = require('bcrypt');
-const moment = require('moment');
+
 
 
 const app = express();
@@ -150,38 +150,48 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Rota para inserir dados no banco de dados
-app.post('/inserir-dados', async (req, res) => {
+app.post('/api/agendamentos', async (req, res) => {
   try {
-    const { login, senha, ddd, celular, rua, numero, cep, cidade, estado } = req.body;
+    const { login, data_agendamento, horario_agendamento, procedimento_desejado } = req.body;
 
-    if (!login || !senha || !ddd || !celular || !rua || !numero || !cep || !cidade || !estado) {
-      return res.status(400).json({ mensagem: 'Campos obrigatórios estão faltando' });
+    // Verificar se já existe agendamento no mesmo horário e dia
+    const existingAppointment = await db.oneOrNone(
+      'SELECT * FROM Agendamentos WHERE data_agendamento = $1 AND horario_agendamento = $2',
+      [data_agendamento, horario_agendamento]
+    );
+
+    if (existingAppointment) {
+      return res.status(400).json({ mensagem: 'Já existe um agendamento para este horário e dia.' });
     }
 
-    // Verifica se o login já existe na tabela
-    const checkLoginQuery = 'SELECT COUNT(*) FROM cadastro_user WHERE login = $1';
-    const loginCount = await db.one(checkLoginQuery, [login], (data) => +data.count);
+    // Verificar se o horário está em intervalos de 30 minutos
+    const parsedTime = new Date(`1970-01-01T${horario_agendamento}`);
+    const isInvalidTime = parsedTime.getMinutes() % 30 !== 0;
 
-    if (loginCount > 0) {
-      return res.status(400).json({ mensagem: 'Login já existe. Escolha outro login.' });
+    if (isInvalidTime) {
+      return res.status(400).json({ mensagem: 'Horário de agendamento deve ser em intervalos de 30 minutos.' });
     }
 
-    // Hash da senha antes de inserir no banco de dados
-    const hashedSenha = await bcrypt.hash(senha, 10);
+    // Inserção no banco de dados usando pg-promise
+    await db.none(
+      'INSERT INTO Agendamentos (login, data_agendamento, horario_agendamento, procedimento_desejado) VALUES ($1, $2, $3, $4)',
+      [login, data_agendamento, horario_agendamento, procedimento_desejado]
+    );
 
-    // Executa a consulta SQL para inserção de dados
-    const insertQuery = `
-      INSERT INTO cadastro_user (login, senha, ddd, celular, rua, numero, cep, cidade, estado)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    `;
-    await db.none(insertQuery, [login, hashedSenha, ddd, celular, rua, numero, cep, cidade, estado]);
+    console.log('Agendamento inserido no banco de dados:');
+    console.log('Login:', login);
+    console.log('Data de Agendamento:', data_agendamento);
+    console.log('Horário de Agendamento:', horario_agendamento);
+    console.log('Procedimento Desejado:', procedimento_desejado);
 
-    res.status(200).json({ mensagem: 'Dados inseridos com sucesso' });
+    // Envie uma resposta de sucesso para o cliente
+    res.status(200).json({ mensagem: 'Agendamento inserido com sucesso!' });
   } catch (error) {
-    console.error('Erro ao inserir dados:', error);
-    res.status(500).json({ erro: 'Erro ao inserir dados' });
+    console.error('Erro ao inserir no banco de dados:', error.message);
+    res.status(500).json({ mensagem: 'Erro interno do servidor. Por favor, tente novamente mais tarde.' });
   }
 });
+
 
 
 app.post('/esqueci-senha', async (req, res) => {
