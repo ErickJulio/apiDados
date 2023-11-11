@@ -6,7 +6,7 @@ const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
 const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
-const cors = require('cors'); 
+const cors = require('cors');
 const pgp = require('pg-promise')();
 const { Client } = require('pg');
 const bcrypt = require('bcrypt');
@@ -128,9 +128,9 @@ const doc = {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-      host: 'api-teste-dados.onrender.com',
-      schemes: ['https'],
-      description: 'Teste'
+  host: 'api-teste-dados.onrender.com',
+  schemes: ['https'],
+  description: 'Teste'
 };
 
 // Configuração do banco de dados PostgreSQL
@@ -211,6 +211,29 @@ app.post('/esqueci-senha', async (req, res) => {
   } finally {
     // Fecha a conexão com o banco de dados
     db.$pool.end();
+  }
+});
+app.post('/api/agendamentos', async (req, res) => {
+  try {
+    const { login, data_agendamento, horario_agendamento, procedimento_desejado } = req.body;
+
+    // Inserção no banco de dados usando pg-promise
+    await db.none(
+      'INSERT INTO Agendamentos (login, data_agendamento, horario_agendamento, procedimento_desejado) VALUES ($1, $2, $3, $4)',
+      [login, data_agendamento, horario_agendamento, procedimento_desejado]
+    );
+
+    console.log('Agendamento inserido no banco de dados:');
+    console.log('Login:', login);
+    console.log('Data de Agendamento:', data_agendamento);
+    console.log('Horário de Agendamento:', horario_agendamento);
+    console.log('Procedimento Desejado:', procedimento_desejado);
+
+    // Envie uma resposta de sucesso para o cliente
+    res.status(200).json({ mensagem: 'Agendamento inserido com sucesso!' });
+  } catch (error) {
+    console.error('Erro ao inserir no banco de dados:', error.message);
+    res.status(500).json({ mensagem: 'Erro interno do servidor' });
   }
 });
 

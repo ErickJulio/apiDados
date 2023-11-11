@@ -288,5 +288,45 @@
         }
       }
     }
+  },
+"/api/agendamentos": {
+  "post": {
+    "summary": "Cria um novo agendamento",
+    "tags": ["Agendamentos"],
+    "requestBody": {
+      "content": {
+        "application/json": {
+          "example": {
+            "login": "@ErickJulio",
+            "data_agendamento": "10-11-2023",
+            "horario_agendamento": "14:30:00",
+            "procedimento_desejado": "Consulta de Rotina"
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Agendamento criado com sucesso",
+        "content": {
+          "application/json": {
+            "example": {
+              "mensagem": "Agendamento inserido com sucesso!"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Erro interno do servidor",
+        "content": {
+          "application/json": {
+            "example": {
+              "mensagem": "Erro interno do servidor"
+            }
+          }
+        }
+      }
+    }
   }
+}
 }
