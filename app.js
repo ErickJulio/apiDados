@@ -6,7 +6,7 @@ const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
 const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
-const cors = require('cors');
+const cors = require('cors'); 
 const pgp = require('pg-promise')();
 const { Client } = require('pg');
 const bcrypt = require('bcrypt');
@@ -128,9 +128,9 @@ const doc = {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-  host: 'api-teste-dados.onrender.com',
-  schemes: ['https'],
-  description: 'Teste'
+      host: 'api-teste-dados.onrender.com',
+      schemes: ['https'],
+      description: 'Teste'
 };
 
 // Configuração do banco de dados PostgreSQL
@@ -217,14 +217,6 @@ app.post('/api/agendamentos', async (req, res) => {
   try {
     const { login, data_agendamento, horario_agendamento, procedimento_desejado } = req.body;
 
-    // Verifica se o usuário existe antes de inserir o agendamento
-    const userExists = await db.oneOrNone('SELECT 1 FROM Usuarios WHERE login = $1', [login]);
-
-    if (!userExists) {
-      // Usuário não encontrado, responde com status 404
-      return res.status(404).json({ message: 'Usuário não encontrado. Verifique o login informado.' });
-    }
-
     // Inserção no banco de dados usando pg-promise
     await db.none(
       'INSERT INTO Agendamentos (login, data_agendamento, horario_agendamento, procedimento_desejado) VALUES ($1, $2, $3, $4)',
@@ -238,7 +230,7 @@ app.post('/api/agendamentos', async (req, res) => {
     console.log('Procedimento Desejado:', procedimento_desejado);
 
     // Envie uma resposta de sucesso para o cliente
-    res.status(200).json({ mensagem: 'Agendamento solicitado com sucesso!' });
+    res.status(200).json({ mensagem: 'Agendamento inserido com sucesso!' });
   } catch (error) {
     console.error('Erro ao inserir no banco de dados:', error.message);
     res.status(500).json({ mensagem: 'Erro interno do servidor' });
