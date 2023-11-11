@@ -217,6 +217,14 @@ app.post('/api/agendamentos', async (req, res) => {
   try {
     const { login, data_agendamento, horario_agendamento, procedimento_desejado } = req.body;
 
+    // Verifica se o usuário existe antes de inserir o agendamento
+    const userExists = await db.oneOrNone('SELECT 1 FROM Usuarios WHERE login = $1', [login]);
+
+    if (!userExists) {
+      // Usuário não encontrado, responde com status 404
+      return res.status(404).json({ message: 'Usuário não encontrado. Verifique o login informado.' });
+    }
+
     // Inserção no banco de dados usando pg-promise
     await db.none(
       'INSERT INTO Agendamentos (login, data_agendamento, horario_agendamento, procedimento_desejado) VALUES ($1, $2, $3, $4)',
