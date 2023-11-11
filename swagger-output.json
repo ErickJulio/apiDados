@@ -289,54 +289,74 @@
       }
     }
   },
-"/api/agendamentos": {
-  "post": {
-    "summary": "Cria um novo agendamento",
-    "tags": ["Agendamentos"],
-    "requestBody": {
-      "content": {
-        "application/json": {
-          "example": {
-            "login": "@ErickJulio",
-            "data_agendamento": "10-11-2023",
-            "horario_agendamento": "14:30:00",
-            "procedimento_desejado": "Consulta de Rotina"
-          }
-        }
-      }
-    },
-    "responses": {
-      "200": {
-        "description": "Agendamento criado com sucesso",
+  "/api/agendamentos": {
+    "post": {
+      "summary": "Cria um novo agendamento",
+      "tags": ["Agendamentos"],
+      "requestBody": {
         "content": {
           "application/json": {
             "example": {
-              "mensagem": "Agendamento inserido com sucesso!"
+              "login": "@ErickJulio",
+              "data_agendamento": "10-11-2023",
+              "horario_agendamento": "14:30:00",
+              "procedimento_desejado": "Consulta de Rotina"
             }
           }
         }
       },
-      "404": {
-        "description": "Not Found - Usuário não encontrado",
-        "content": {
-          "application/json": {
-            "example": {
-              "message": "Usuário não encontrado. Verifique o login informado."
+      "responses": {
+        "200": {
+          "description": "Agendamento criado com sucesso",
+          "content": {
+            "application/json": {
+              "example": {
+                "mensagem": "Agendamento inserido com sucesso!"
+              }
             }
           }
-        }
-      },
-      "500": {
-        "description": "Erro interno do servidor",
-        "content": {
-          "application/json": {
-            "example": {
-              "mensagem": "Erro interno do servidor"
+        },
+        "400": {
+          "description": "Bad Request - Já existe agendamento para este horário e dia",
+          "content": {
+            "application/json": {
+              "example": {
+                "mensagem": "Já existe um agendamento para este horário e dia."
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Bad Request - Horário de agendamento deve ser em intervalos de 30 minutos",
+          "content": {
+            "application/json": {
+              "example": {
+                "mensagem": "Horário de agendamento deve ser em intervalos de 30 minutos."
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Usuário não encontrado",
+          "content": {
+            "application/json": {
+              "example": {
+                "mensagem": "Usuário não encontrado. Verifique o login informado."
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Erro interno do servidor",
+          "content": {
+            "application/json": {
+              "example": {
+                "mensagem": "Erro interno do servidor"
+              }
             }
           }
         }
       }
     }
   }
-}
-}
+}  

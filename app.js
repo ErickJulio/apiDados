@@ -10,6 +10,8 @@ const cors = require('cors');
 const pgp = require('pg-promise')();
 const { Client } = require('pg');
 const bcrypt = require('bcrypt');
+const moment = require('moment');
+
 
 const app = express();
 const port = 3000;
@@ -213,9 +215,28 @@ app.post('/esqueci-senha', async (req, res) => {
     db.$pool.end();
   }
 });
+const moment = require('moment'); // Certifique-se de ter a biblioteca moment instalada
+
 app.post('/api/agendamentos', async (req, res) => {
   try {
     const { login, data_agendamento, horario_agendamento, procedimento_desejado } = req.body;
+
+    // Verificar se já existe agendamento no mesmo horário e dia
+    const existingAppointment = await db.oneOrNone(
+      'SELECT * FROM Agendamentos WHERE data_agendamento = $1 AND horario_agendamento = $2',
+      [data_agendamento, horario_agendamento]
+    );
+
+    if (existingAppointment) {
+      return res.status(400).json({ mensagem: 'Já existe um agendamento para este horário e dia.' });
+    }
+
+    // Verificar se o horário está em intervalos de 30 minutos
+    const isInvalidTime = moment(horario_agendamento, 'HH:mm').minutes() % 30 !== 0;
+
+    if (isInvalidTime) {
+      return res.status(400).json({ mensagem: 'Horário de agendamento deve ser em intervalos de 30 minutos.' });
+    }
 
     // Inserção no banco de dados usando pg-promise
     await db.none(
@@ -233,9 +254,10 @@ app.post('/api/agendamentos', async (req, res) => {
     res.status(200).json({ mensagem: 'Agendamento inserido com sucesso!' });
   } catch (error) {
     console.error('Erro ao inserir no banco de dados:', error.message);
-    res.status(404).json({ mensagem: 'Usuário não encontrado. Verifique o login informado.' });
+    res.status(500).json({ mensagem: 'Erro interno. Por favor, tente novamente mais tarde.' });
   }
 });
+
 
 // Gere a documentação Swagger
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
