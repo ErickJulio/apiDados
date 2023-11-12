@@ -225,7 +225,39 @@ app.post('/esqueci-senha', async (req, res) => {
     db.$pool.end();
   }
 });
-const moment = require('moment'); // Certifique-se de ter a biblioteca moment instalada
+app.post('/inserir-dados', async (req, res) => {
+  try {
+    const { login, senha, ddd, celular, rua, numero, cep, cidade, estado } = req.body;
+
+    if (!login || !senha || !ddd || !celular || !rua || !numero || !cep || !cidade || !estado) {
+      return res.status(400).json({ mensagem: 'Campos obrigatórios estão faltando' });
+    }
+
+    // Verifica se o login já existe na tabela
+    const checkLoginQuery = 'SELECT COUNT(*) FROM cadastro_user WHERE login = $1';
+    const loginCount = await db.one(checkLoginQuery, [login], (data) => +data.count);
+
+    if (loginCount > 0) {
+      return res.status(400).json({ mensagem: 'Login já existe. Escolha outro login.' });
+    }
+
+    // Hash da senha antes de inserir no banco de dados
+    const hashedSenha = await bcrypt.hash(senha, 10);
+
+    // Executa a consulta SQL para inserção de dados
+    const insertQuery = `
+      INSERT INTO cadastro_user (login, senha, ddd, celular, rua, numero, cep, cidade, estado)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `;
+    await db.none(insertQuery, [login, hashedSenha, ddd, celular, rua, numero, cep, cidade, estado]);
+
+    res.status(200).json({ mensagem: 'Dados inseridos com sucesso' });
+  } catch (error) {
+    console.error('Erro ao inserir dados:', error);
+    res.status(500).json({ erro: 'Erro ao inserir dados' });
+  }
+});
+
 
 app.post('/api/agendamentos', async (req, res) => {
   try {
