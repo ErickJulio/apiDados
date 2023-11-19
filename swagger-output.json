@@ -311,7 +311,9 @@
           "content": {
             "application/json": {
               "example": {
-                "mensagem": "Agendamento inserido com sucesso!"
+                "mensagem": "Agendamento inserido com sucesso!",
+                "status": "pendente",
+                "protocolo": "21f65dfa-83fd-4004-8d71-854b4d423088"
               }
             }
           }
