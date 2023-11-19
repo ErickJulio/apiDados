@@ -308,6 +308,7 @@ app.post('/api/agendamentos', async (req, res) => {
 
 
 
+
 // Gere a documentação Swagger
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
   const swaggerDocument = require(outputFile);
