@@ -5,18 +5,10 @@
     "version": "1.0.0",
     "description": ""
   },
-  "host": "localhost:3000",
-  "servers": [
-    {
-      "url": "http://localhost:3000"
-    },
-    {
-      "url": "http://teste-dados.onrender.com/api-docs/"
-    }
-  ],
+  "host": "api-teste-dados.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/gerar-dadosAleatorios": {
@@ -115,8 +107,7 @@
     },
     "/login": {
       "post": {
-        "summary": "Endpoint para verificar login e senha",
-        "description": "Este endpoint permite verificar o login e senha do usuário e, se não estiver cadastrado, solicitar o cadastro.",
+        "description": "",
         "parameters": [
           {
             "name": "body",
@@ -125,12 +116,10 @@
               "type": "object",
               "properties": {
                 "login": {
-                  "type": "string",
-                  "example": "seu_login"
+                  "example": "any"
                 },
                 "senha": {
-                  "type": "string",
-                  "example": "sua_senha"
+                  "example": "any"
                 }
               }
             }
@@ -138,27 +127,20 @@
         ],
         "responses": {
           "200": {
-            "description": "OK - Login bem-sucedido"
-          },
-          "400": {
-            "description": "Bad Request - Requisição inválida"
+            "description": "OK"
           },
           "401": {
-            "description": "Unauthorized - Usuário não encontrado, solicitar cadastro, ou senha incorreta",
-            "content": {
-              "application/json": {
-                "example": {
-                  "message": "Senha incorreta."
-                }
-              }
-            }
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/inserir-dados": {
+    "/api/agendamentos": {
       "post": {
-        "description": "Inserir dados na tabela 'cadastro_user'. Verifica se o login já existe antes da inserção.",
+        "description": "",
         "parameters": [
           {
             "name": "body",
@@ -167,40 +149,16 @@
               "type": "object",
               "properties": {
                 "login": {
-                  "type": "string",
-                  "example": "exemplo_de_login"
+                  "example": "any"
                 },
-                "senha": {
-                  "type": "string",
-                  "example": "exemplo_de_senha"
+                "data_agendamento": {
+                  "example": "any"
                 },
-                "ddd": {
-                  "type": "string",
-                  "example": "exemplo_de_ddd"
+                "horario_agendamento": {
+                  "example": "any"
                 },
-                "celular": {
-                  "type": "string",
-                  "example": "exemplo_de_celular"
-                },
-                "rua": {
-                  "type": "string",
-                  "example": "exemplo_de_rua"
-                },
-                "numero": {
-                  "type": "string",
-                  "example": "exemplo_de_numero"
-                },
-                "cep": {
-                  "type": "string",
-                  "example": "exemplo_de_cep"
-                },
-                "cidade": {
-                  "type": "string",
-                  "example": "exemplo_de_cidade"
-                },
-                "estado": {
-                  "type": "string",
-                  "example": "exemplo_de_estado"
+                "procedimento_desejado": {
+                  "example": "any"
                 }
               }
             }
@@ -208,21 +166,20 @@
         ],
         "responses": {
           "200": {
-            "description": "OK - Dados inseridos com sucesso"
+            "description": "OK"
           },
           "400": {
-            "description": "Bad Request - Campos obrigatórios estão faltando ou login já existe"
+            "description": "Bad Request"
           },
           "500": {
-            "description": "Internal Server Error - Erro ao inserir dados"
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/esqueci-senha": {
       "post": {
-        "summary": "Endpoint para recuperação de senha",
-        "description": "Este endpoint permite solicitar a recuperação de senha, verificando se o login existe. Além disso, permite ao usuário digitar e confirmar a nova senha.",
+        "description": "",
         "parameters": [
           {
             "name": "body",
@@ -231,134 +188,88 @@
               "type": "object",
               "properties": {
                 "login": {
-                  "type": "string",
-                  "example": "seu_login"
+                  "example": "any"
                 },
                 "senha": {
-                  "type": "string",
-                  "example": "nova_senha"
+                  "example": "any"
                 },
                 "confirmarSenha": {
-                  "type": "string",
-                  "example": "nova_senha"
+                  "example": "any"
                 }
-              },
-              "required": [
-                "login",
-                "senha",
-                "confirmarSenha"
-              ]
+              }
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK - Solicitação de recuperação de senha bem-sucedida. A senha foi alterada com sucesso."
+            "description": "OK"
           },
           "400": {
-            "description": "Bad Request - Senha e confirmação de senha não coincidem.",
-            "content": {
-              "application/json": {
-                "example": {
-                  "message": "Senha e confirmação de senha não coincidem."
-                }
-              }
-            }
+            "description": "Bad Request"
           },
           "404": {
-            "description": "Not Found - Login não encontrado",
-            "content": {
-              "application/json": {
-                "example": {
-                  "message": "Login não encontrado"
-                }
-              }
-            }
+            "description": "Not Found"
           },
           "500": {
-            "description": "Internal Server Error - Erro ao consultar ou atualizar o banco de dados",
-            "content": {
-              "application/json": {
-                "example": {
-                  "message": "Erro ao consultar ou atualizar o banco de dados"
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/inserir-dados": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "example": "any"
+                },
+                "senha": {
+                  "example": "any"
+                },
+                "ddd": {
+                  "example": "any"
+                },
+                "celular": {
+                  "example": "any"
+                },
+                "rua": {
+                  "example": "any"
+                },
+                "numero": {
+                  "example": "any"
+                },
+                "cep": {
+                  "example": "any"
+                },
+                "cidade": {
+                  "example": "any"
+                },
+                "estado": {
+                  "example": "any"
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     }
   },
-  "/api/agendamentos": {
-    "post": {
-      "summary": "Cria um novo agendamento",
-      "tags": ["Agendamentos"],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "example": {
-              "login": "@ErickJulio",
-              "data_agendamento": "10-11-2023",
-              "horario_agendamento": "14:30:00",
-              "procedimento_desejado": "Consulta de Rotina"
-            }
-          }
-        }
-      },
-      "responses": {
-        "200": {
-          "description": "Agendamento criado com sucesso",
-          "content": {
-            "application/json": {
-              "example": {
-                "mensagem": "Agendamento inserido com sucesso!",
-                "status": "pendente",
-                "protocolo": "21f65dfa-83fd-4004-8d71-854b4d423088"
-              }
-            }
-          }
-        },
-        "400": {
-          "description": "Bad Request - Já existe agendamento para este horário e dia",
-          "content": {
-            "application/json": {
-              "example": {
-                "mensagem": "Já existe um agendamento para este horário e dia."
-              }
-            }
-          }
-        },
-        "401": {
-          "description": "Bad Request - Horário de agendamento deve ser em intervalos de 30 minutos",
-          "content": {
-            "application/json": {
-              "example": {
-                "mensagem": "Horário de agendamento deve ser em intervalos de 30 minutos."
-              }
-            }
-          }
-        },
-        "404": {
-          "description": "Not Found - Usuário não encontrado",
-          "content": {
-            "application/json": {
-              "example": {
-                "mensagem": "Usuário não encontrado. Verifique o login informado."
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Erro interno do servidor",
-          "content": {
-            "application/json": {
-              "example": {
-                "mensagem": "Erro interno do servidor"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  "description": "Teste"
 }
