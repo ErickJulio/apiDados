@@ -282,8 +282,14 @@ app.post('/api/agendamentos', async (req, res) => {
 
     // Inserção no banco de dados usando pg-promise
     const insertedAppointment = await db.one(
-      'INSERT INTO Agendamentos (login, data_agendamento, horario_agendamento, procedimento_desejado) VALUES ($1, $2, $3, $4) RETURNING status, protocolo',
+      'INSERT INTO Agendamentos (login, data_agendamento, horario_agendamento, procedimento_desejado) VALUES ($1, $2, $3, $4) RETURNING id',
       [login, data_agendamento, horario_agendamento, procedimento_desejado]
+    );
+
+    // Consulta adicional para obter status e protocolo
+    const updatedAppointment = await db.one(
+      'SELECT status, protocolo FROM Agendamentos WHERE id = $1',
+      [insertedAppointment.id]
     );
 
     console.log('Agendamento inserido no banco de dados:');
@@ -291,14 +297,14 @@ app.post('/api/agendamentos', async (req, res) => {
     console.log('Data de Agendamento:', data_agendamento);
     console.log('Horário de Agendamento:', horario_agendamento);
     console.log('Procedimento Desejado:', procedimento_desejado);
-    console.log('Status:', insertedAppointment.status);
-    console.log('Protocolo:', insertedAppointment.protocolo);
+    console.log('Status:', updatedAppointment.status);
+    console.log('Protocolo:', updatedAppointment.protocolo);
 
     // Envie uma resposta de sucesso para o cliente com as informações adicionais
     res.status(200).json({
       mensagem: 'Agendamento inserido com sucesso!',
-      status: insertedAppointment.status,
-      protocolo: insertedAppointment.protocolo
+      status: updatedAppointment.status,
+      protocolo: updatedAppointment.protocolo
     });
   } catch (error) {
     console.error('Erro ao inserir no banco de dados:', error.message);
