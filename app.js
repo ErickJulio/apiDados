@@ -225,6 +225,39 @@ app.post('/esqueci-senha', async (req, res) => {
     db.$pool.end();
   }
 });
+app.post('/inserir-dados', async (req, res) => {
+  try {
+    const { login, senha, ddd, celular, rua, numero, cep, cidade, estado } = req.body;
+
+    if (!login || !senha || !ddd || !celular || !rua || !numero || !cep || !cidade || !estado) {
+      return res.status(400).json({ mensagem: 'Campos obrigatórios estão faltando' });
+    }
+
+    // Verifica se o login já existe na tabela
+    const checkLoginQuery = 'SELECT COUNT(*) FROM cadastro_user WHERE login = $1';
+    const loginCount = await db.one(checkLoginQuery, [login], (data) => +data.count);
+
+    if (loginCount > 0) {
+      return res.status(400).json({ mensagem: 'Login já existe. Escolha outro login.' });
+    }
+
+    // Hash da senha antes de inserir no banco de dados
+    const hashedSenha = await bcrypt.hash(senha, 10);
+
+    // Executa a consulta SQL para inserção de dados
+    const insertQuery = `
+      INSERT INTO cadastro_user (login, senha, ddd, celular, rua, numero, cep, cidade, estado)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `;
+    await db.none(insertQuery, [login, hashedSenha, ddd, celular, rua, numero, cep, cidade, estado]);
+
+    res.status(200).json({ mensagem: 'Dados inseridos com sucesso' });
+  } catch (error) {
+    console.error('Erro ao inserir dados:', error);
+    res.status(500).json({ erro: 'Erro ao inserir dados' });
+  }
+});
+
 
 app.post('/api/agendamentos', async (req, res) => {
   try {
@@ -248,15 +281,9 @@ app.post('/api/agendamentos', async (req, res) => {
     }
 
     // Inserção no banco de dados usando pg-promise
-    const insertedAppointmentId = await db.one(
-      'INSERT INTO Agendamentos (login, data_agendamento, horario_agendamento, procedimento_desejado) VALUES ($1, $2, $3, $4) RETURNING id',
+    const insertedAppointment = await db.one(
+      'INSERT INTO Agendamentos (login, data_agendamento, horario_agendamento, procedimento_desejado) VALUES ($1, $2, $3, $4) RETURNING status, protocolo',
       [login, data_agendamento, horario_agendamento, procedimento_desejado]
-    );
-
-    // Consulta para obter detalhes do agendamento
-    const insertedAppointmentDetails = await db.one(
-      'SELECT status, protocolo FROM Agendamentos WHERE id = $1',
-      [insertedAppointmentId.id]
     );
 
     console.log('Agendamento inserido no banco de dados:');
@@ -264,26 +291,20 @@ app.post('/api/agendamentos', async (req, res) => {
     console.log('Data de Agendamento:', data_agendamento);
     console.log('Horário de Agendamento:', horario_agendamento);
     console.log('Procedimento Desejado:', procedimento_desejado);
-    console.log('Status:', insertedAppointmentDetails.status);
-    console.log('Protocolo:', insertedAppointmentDetails.protocolo);
+    console.log('Status:', insertedAppointment.status);
+    console.log('Protocolo:', insertedAppointment.protocolo);
 
     // Envie uma resposta de sucesso para o cliente com as informações adicionais
     res.status(200).json({
       mensagem: 'Agendamento inserido com sucesso!',
-      status: insertedAppointmentDetails.status,
-      protocolo: insertedAppointmentDetails.protocolo
+      status: insertedAppointment.status,
+      protocolo: insertedAppointment.protocolo
     });
   } catch (error) {
     console.error('Erro ao inserir no banco de dados:', error.message);
     res.status(500).json({ mensagem: 'Erro interno. Por favor, tente novamente mais tarde.' });
   }
 });
-
-
-
-
-
-
 
 // Gere a documentação Swagger
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
