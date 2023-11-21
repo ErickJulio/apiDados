@@ -225,9 +225,6 @@ app.post('/esqueci-senha', async (req, res) => {
     db.$pool.end();
   }
 });
-const moment = require('moment'); // Certifique-se de ter a biblioteca moment instalada
-
-const moment = require('moment');
 
 app.post('/api/agendamentos', async (req, res) => {
   try {
