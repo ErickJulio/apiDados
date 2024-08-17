@@ -10,7 +10,13 @@ const cors = require('cors');
 const pgp = require('pg-promise')();
 const { Client } = require('pg');
 const bcrypt = require('bcrypt');
-
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const { Document } = require('docx');
+const { PDFDocument } = require('pdf-lib');
+const mammoth = require('mammoth'); // Certifique-se de importar a biblioteca 'mammoth'
+const htmlToPdf = require('html-pdf'); 
 
 
 const app = express();
@@ -21,6 +27,52 @@ app.use(cors()); // Use o middleware cors
 app.use(express.json());
 app.use(bodyParser.json());
 
+const upload = multer({ dest: 'uploads/' });
+// Função para converter HTML para PDF
+function convertHtmlToPdf(html, outputFilePath) {
+  return new Promise((resolve, reject) => {
+    htmlToPdf.create(html).toFile(outputFilePath, (err, res) => {
+      if (err) return reject(err);
+      resolve(res);
+    });
+  });
+}
+
+// Função para converter DOCX para PDF
+async function convertDocxToPdf(inputFilePath, outputFilePath) {
+  try {
+    const result = await mammoth.convertToHtml({ path: inputFilePath });
+    const html = result.value;
+    await convertHtmlToPdf(html, outputFilePath);
+  } catch (error) {
+    throw new Error(`Erro na conversão: ${error.message}`);
+  }
+}
+
+// Endpoint para conversão de Word para PDF
+app.post('converter-docx-pdf', upload.single('file'), async (req, res) => {
+  if (!req.file || path.extname(req.file.originalname) !== '.docx') {
+    return res.status(400).send('Arquivo inválido');
+  }
+
+  const inputFilePath = req.file.path;
+  const outputFilePath = `converted/${path.basename(req.file.originalname, '.docx')}.pdf`;
+
+  try {
+    await convertDocxToPdf(inputFilePath, outputFilePath);
+    res.download(outputFilePath, (err) => {
+      if (err) {
+        console.error(err);
+      }
+      // Limpeza dos arquivos temporários
+      fs.unlinkSync(inputFilePath);
+      fs.unlinkSync(outputFilePath);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Erro na conversão');
+  }
+});
 // Gerar dados fictícios
 app.get('/gerar-dadosAleatorios', (req, res) => {
   const nome = faker.name.findName();
