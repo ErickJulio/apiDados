@@ -10,49 +10,7 @@
   "schemes": [
     "https"
   ],
- "paths": {
-    "/converter-docx-pdf": {
-      "post": {
-        "summary": "Converte um arquivo DOCX para PDF",
-        "description": "Este endpoint permite o upload de um arquivo DOCX e retorna o arquivo convertido em PDF. Utilize este endpoint para enviar arquivos DOCX e obter o PDF correspondente.",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "application/pdf"
-        ],
-        "parameters": [
-          {
-            "name": "file",
-            "in": "formData",
-            "description": "Arquivo DOCX a ser convertido",
-            "required": true,
-            "schema": {
-              "type": "file"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Arquivo PDF convertido com sucesso",
-            "content": {
-              "application/pdf": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Arquivo inválido ou parâmetros incorretos"
-          },
-          "500": {
-            "description": "Erro interno do servidor ao processar o arquivo"
-          }
-        }
-      }
-    },
+  "paths": {
     "/gerar-dadosAleatorios": {
       "get": {
         "description": "",
@@ -308,6 +266,41 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/converter-docx-pdf": {
+      "post": {
+        "summary": "Converte um arquivo DOCX para PDF",
+        "description": "Recebe um arquivo DOCX e retorna um arquivo PDF convertido. Este endpoint permite o upload de um arquivo DOCX e fornece o PDF convertido como resposta.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/pdf"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "Arquivo DOCX a ser convertido",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Arquivo PDF convertido com sucesso",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "400": {
+            "description": "Arquivo inválido ou parâmetros incorretos"
+          },
+          "500": {
+            "description": "Erro interno do servidor ao processar o arquivo"
           }
         }
       }

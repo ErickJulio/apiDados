@@ -50,7 +50,7 @@ async function convertDocxToPdf(inputFilePath, outputFilePath) {
 }
 
 // Endpoint para conversão de Word para PDF
-app.post('converter-docx-pdf', upload.single('file'), async (req, res) => {
+app.post('/converter-docx-pdf', upload.single('file'), async (req, res) => {
   if (!req.file || path.extname(req.file.originalname) !== '.docx') {
     return res.status(400).send('Arquivo inválido');
   }
