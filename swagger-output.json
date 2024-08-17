@@ -11,6 +11,36 @@
     "https"
   ],
   "paths": {
+    "/converter-docx-pdf": {
+      "post": {
+        "description": "Endpoint para converter arquivos DOCX para PDF.",
+        "consumes": ["multipart/form-data"],
+        "produces": ["application/pdf"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "file",
+            "type": "file",
+            "description": "Arquivo DOCX a ser convertido para PDF",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Arquivo PDF gerado com sucesso",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/gerar-dadosAleatorios": {
       "get": {
         "description": "",
@@ -266,41 +296,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/converter-docx-pdf": {
-      "post": {
-        "summary": "Converte um arquivo DOCX para PDF",
-        "description": "Recebe um arquivo DOCX e retorna um arquivo PDF convertido. Este endpoint permite o upload de um arquivo DOCX e fornece o PDF convertido como resposta.",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "application/pdf"
-        ],
-        "parameters": [
-          {
-            "name": "file",
-            "in": "formData",
-            "description": "Arquivo DOCX a ser convertido",
-            "required": true,
-            "type": "file"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Arquivo PDF convertido com sucesso",
-            "schema": {
-              "type": "file"
-            }
-          },
-          "400": {
-            "description": "Arquivo inválido ou parâmetros incorretos"
-          },
-          "500": {
-            "description": "Erro interno do servidor ao processar o arquivo"
           }
         }
       }
