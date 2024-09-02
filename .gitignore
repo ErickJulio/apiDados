@@ -1,2 +1,10 @@
+
 node_modules/
-uploads/
+uploadsads/
+
+*.log
+
+*.tmp
+*.bak
+*.swp
+*.swo
