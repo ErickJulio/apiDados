@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Node.js CI
 
 on:
   push:
@@ -13,73 +13,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout API Repository
-        uses: actions/checkout@v2
-        with:
-          repository: 'ErickJulio/apiDados'
-          path: './api'
+    - name: Check out the repository
+      uses: actions/checkout@v2
 
-      - name: Checkout Cypress Repository
-        uses: actions/checkout@v2
-        with:
-          repository: 'ErickJulio/testeConverterArquivoDocx'
-          path: './cypress'
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./api
 
-      - name: Install API dependencies
-        run: |
-          cd ./api
-          npm install
+    - name: Run API
+      run: npm start
+      working-directory: ./api &
+      
+    - name: Wait for API to start
+      run: sleep 240 # Aguarda 4 minutos para a API subir completamente
 
-      - name: Install Cypress dependencies
-        run: |
-          cd ./cypress
-          npm install
+    - name: Install Cypress
+      run: npm install
+      working-directory: ./cypress
 
-      - name: Start API on Render
-        run: |
-          cd ./api
-          npm start &
-        env:
-          NODE_ENV: test
-
-      - name: Wait for API to be ready
-        run: npx wait-on https://api-teste-dados.onrender.com/api-docs --timeout 240000 # 4 minutos
-
-      - name: Run Cypress tests
-        run: |
-          cd ./cypress
-          npx cypress run
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: success()  # Somente executa este job se o job anterior "build" tiver sucesso
-    steps:
-      - name: Checkout API Repository
-        uses: actions/checkout@v2
-        with:
-          repository: 'ErickJulio/apiDados'
-          path: './api'
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - name: Install API dependencies
-        run: |
-          cd ./api
-          npm install
-
-      - name: Deploy to Render
-        run: |
-          cd ./api
-          npm run deploy  # Comando fictício, troque pelo seu comando de deploy real
-        env:
-          NODE_ENV: production
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}  # Certifique-se de que sua chave de API está configurada nos secrets do GitHub
+    - name: Run Cypress tests
+      run: npm run cypress:run
+      working-directory: ./cypress
