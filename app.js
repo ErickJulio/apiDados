@@ -53,7 +53,7 @@ async function convertDocxToPdf(inputFilePath, outputFilePath) {
 app.post('/converter-docx-pdf', upload.single('file'), async (req, res) => {
   // #swagger.tags = ['Converser']
   /* 
-    #swagger.parameters['obj'] = {
+    #swagger.parameters['file'] = {
       in: 'formData',
       description: 'Envia um arquivo DOCX para conversão em PDF.',
       required: true,
@@ -65,10 +65,10 @@ app.post('/converter-docx-pdf', upload.single('file'), async (req, res) => {
             file: {
               type: 'string',
               format: 'binary',
-              description: 'Arquivo DOCX a ser convertido para PDF',
-              example: 'file'
+              description: 'Arquivo DOCX a ser convertido para PDF'
             }
-          }
+          },
+          required: ['file']
         }
       }
     }
@@ -105,6 +105,7 @@ app.post('/converter-docx-pdf', upload.single('file'), async (req, res) => {
       }
     }
   */
+
 
 
   if (!req.file || path.extname(req.file.originalname) !== '.docx') {

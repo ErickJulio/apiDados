@@ -19,7 +19,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "obj",
+            "name": "file",
             "in": "formData",
             "description": "Envia um arquivo DOCX para conversão em PDF.",
             "required": true,
@@ -31,10 +31,12 @@
                   "file": {
                     "type": "string",
                     "format": "binary",
-                    "description": "Arquivo DOCX a ser convertido para PDF",
-                    "example": "file"
+                    "description": "Arquivo DOCX a ser convertido para PDF"
                   }
-                }
+                },
+                "required": [
+                  "file"
+                ]
               }
             }
           }
