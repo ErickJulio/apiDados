@@ -40,12 +40,15 @@ jobs:
           cd ./cypress
           npm install
 
-      - name: Start API
+      - name: Start API on Render
         run: |
           cd ./api
           npm start &
         env:
           NODE_ENV: test
+
+      - name: Wait for API to be ready
+        run: npx wait-on https://api-teste-dados.onrender.com/api-docs --timeout 240000 # 4 minutos
 
       - name: Run Cypress tests
         run: |
