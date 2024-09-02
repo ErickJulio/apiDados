@@ -1,4 +1,4 @@
-name: Node.js CI
+name: CI Pipeline
 
 on:
   push:
@@ -13,29 +13,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the repository
-      uses: actions/checkout@v2
+      - name: Checkout API Repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'ErickJulio/apiDados'
+          path: './api'
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: Checkout Cypress Repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'ErickJulio/testeConverterArquivoDocx'
+          path: './cypress'
 
-    - name: Install dependencies
-      run: npm install
-      working-directory: ./api
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
 
-    - name: Run API
-      run: npm start
-      working-directory: ./api &
-      
-    - name: Wait for API to start
-      run: sleep 240 # Aguarda 4 minutos para a API subir completamente
+      - name: Install API dependencies
+        run: |
+          cd ./api
+          npm install
 
-    - name: Install Cypress
-      run: npm install
-      working-directory: ./cypress
+      - name: Install Cypress dependencies
+        run: |
+          cd ./cypress
+          npm install
 
-    - name: Run Cypress tests
-      run: npm run cypress:run
-      working-directory: ./cypress
+      - name: Start API on Render
+        run: |
+          cd ./api
+          npm start &
+        env:
+          NODE_ENV: test
+
+      - name: Wait for API to be ready
+        run: npx wait-on https://api-teste-dados.onrender.com/api-docs --timeout 240000 # 4 minutos
+
+      - name: Run Cypress tests
+        run: |
+          cd ./cypress
+          npx cypress run
