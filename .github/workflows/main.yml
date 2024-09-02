@@ -9,51 +9,42 @@ on:
       - main
 
 jobs:
-  checkout_api:
-    name: Checkout repositório da API
+  checkout_instalar_dependencias_api:
+    name: Checkout e Instalar dependências API
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout API
+      - name: Checkout repositório da API
         uses: actions/checkout@v2
         with:
           repository: 'ErickJulio/apiDados'
           path: './api'
-
-  checkout_cypress:
-    name: Checkout repositório do Cypress
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Cypress
-        uses: actions/checkout@v2
-        with:
-          repository: 'ErickJulio/testeConverterArquivoDocx'
-          path: './cypress'
-
-  configurar_nodejs:
-    name: Configurar o Node.js
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Node.js
+      
+      - name: Configurar o Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-  instalar_dependencias_api:
-    name: Instalar dependências API
-    runs-on: ubuntu-latest
-    needs: checkout_api
-    steps:
-      - name: Instalar dependências
+      - name: Instalar dependências API
         run: |
           cd ./api
           npm install
 
-  instalar_dependencias_cypress:
-    name: Instalar dependências Cypress
+  checkout_instalar_dependencias_cypress:
+    name: Checkout e Instalar dependências Cypress
     runs-on: ubuntu-latest
-    needs: checkout_cypress
     steps:
-      - name: Instalar dependências
+      - name: Checkout repositório do Cypress
+        uses: actions/checkout@v2
+        with:
+          repository: 'ErickJulio/testeConverterArquivoDocx'
+          path: './cypress'
+      
+      - name: Configurar o Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Instalar dependências Cypress
         run: |
           cd ./cypress
           npm install
@@ -61,7 +52,7 @@ jobs:
   iniciar_api:
     name: Iniciar API no Render
     runs-on: ubuntu-latest
-    needs: instalar_dependencias_api
+    needs: checkout_instalar_dependencias_api
     steps:
       - name: Start API
         run: |
@@ -84,7 +75,7 @@ jobs:
   executar_testes_cypress:
     name: Executar testes do Cypress
     runs-on: ubuntu-latest
-    needs: [instalar_dependencias_cypress, aguardar_api]
+    needs: [checkout_instalar_dependencias_cypress, aguardar_api]
     steps:
       - name: Run Cypress Tests
         run: |
