@@ -13,27 +13,64 @@
   "paths": {
     "/converter-docx-pdf": {
       "post": {
-        "description": "Endpoint para converter arquivos DOCX para PDF.",
-        "consumes": ["multipart/form-data"],
-        "produces": ["application/pdf"],
+        "tags": [
+          "Converser"
+        ],
+        "description": "",
         "parameters": [
           {
+            "name": "obj",
             "in": "formData",
-            "name": "file",
+            "description": "Envia um arquivo DOCX para conversão em PDF.",
+            "required": true,
             "type": "file",
-            "description": "Arquivo DOCX a ser convertido para PDF",
-            "required": true
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Arquivo DOCX a ser convertido para PDF",
+                    "example": "file"
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Arquivo PDF gerado com sucesso",
-            "schema": {
-              "type": "file"
+            "description": "Arquivo convertido com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Arquivo convertido com sucesso."
+                    }
+                  }
+                }
+              }
             }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Erro ao processar o arquivo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Erro ao processar o arquivo."
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"

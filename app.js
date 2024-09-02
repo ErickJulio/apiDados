@@ -6,7 +6,7 @@ const cpfCheck = require('cpf-check');
 const cepPromise = require('cep-promise');
 const bodyParser = require('body-parser');
 const client = require('twilio')('AC53e0821f48f3d4541a0a446e13482882', '3ad67d33d78ec8c717e66bd744132b37');
-const cors = require('cors'); 
+const cors = require('cors');
 const pgp = require('pg-promise')();
 const { Client } = require('pg');
 const bcrypt = require('bcrypt');
@@ -16,7 +16,7 @@ const fs = require('fs');
 const { Document } = require('docx');
 const { PDFDocument } = require('pdf-lib');
 const mammoth = require('mammoth'); // Certifique-se de importar a biblioteca 'mammoth'
-const htmlToPdf = require('html-pdf'); 
+const htmlToPdf = require('html-pdf');
 
 
 const app = express();
@@ -51,6 +51,62 @@ async function convertDocxToPdf(inputFilePath, outputFilePath) {
 
 // Endpoint para conversão de Word para PDF
 app.post('/converter-docx-pdf', upload.single('file'), async (req, res) => {
+  // #swagger.tags = ['Converser']
+  /* 
+    #swagger.parameters['obj'] = {
+      in: 'formData',
+      description: 'Envia um arquivo DOCX para conversão em PDF.',
+      required: true,
+      type: 'file',
+      'multipart/form-data': {
+        schema: {
+          type: 'object',
+          properties: {
+            file: {
+              type: 'string',
+              format: 'binary',
+              description: 'Arquivo DOCX a ser convertido para PDF',
+              example: 'file'
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = {
+      description: 'Arquivo convertido com sucesso.',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              message: {
+                type: 'string',
+                example: 'Arquivo convertido com sucesso.'
+              }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[400] = {
+      description: 'Erro ao processar o arquivo.',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              error: {
+                type: 'string',
+                example: 'Erro ao processar o arquivo.'
+              }
+            }
+          }
+        }
+      }
+    }
+  */
+
+
   if (!req.file || path.extname(req.file.originalname) !== '.docx') {
     return res.status(400).send('Arquivo inválido');
   }
@@ -182,9 +238,9 @@ const doc = {
     title: 'Gerar Dados',
     version: '1.0.0'
   },
-      host: 'api-teste-dados.onrender.com',
-      schemes: ['https'],
-      description: 'Teste'
+  host: 'api-teste-dados.onrender.com',
+  schemes: ['https'],
+  description: 'Teste'
 };
 
 // Configuração do banco de dados PostgreSQL
