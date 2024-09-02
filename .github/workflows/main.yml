@@ -1,0 +1,53 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout API Repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'ErickJulio/apiDados'
+          path: './api'
+
+      - name: Checkout Cypress Repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'ErickJulio/testeConverterArquivoDocx'
+          path: './cypress'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install API dependencies
+        run: |
+          cd ./api
+          npm install
+
+      - name: Install Cypress dependencies
+        run: |
+          cd ./cypress
+          npm install
+
+      - name: Start API
+        run: |
+          cd ./api
+          npm start &
+        env:
+          NODE_ENV: test
+
+      - name: Run Cypress tests
+        run: |
+          cd ./cypress
+          npx cypress run
