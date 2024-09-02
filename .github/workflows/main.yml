@@ -49,7 +49,7 @@ jobs:
 
       - name: Aguardar a API estar pronta
         run: |
-          npx wait-on --timeout 300000 --interval 5000 https://api-teste-dados.onrender.com/api-docs
+          npx wait-on --timeout 400000 --interval 7000 https://api-teste-dados.onrender.com/api-docs
         env:
           NODE_ENV: test
 
