@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Pipeline de CI
 
 on:
   push:
@@ -9,48 +9,48 @@ on:
       - main
 
 jobs:
-  build:
+  construir:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout API Repository
+      - name: Fazer checkout do repositório da API
         uses: actions/checkout@v2
         with:
           repository: 'ErickJulio/apiDados'
           path: './api'
 
-      - name: Checkout Cypress Repository
+      - name: Fazer checkout do repositório do Cypress
         uses: actions/checkout@v2
         with:
           repository: 'ErickJulio/testeConverterArquivoDocx'
           path: './cypress'
 
-      - name: Set up Node.js
+      - name: Configurar o Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Install API dependencies
+      - name: Instalar dependências da API
         run: |
           cd ./api
           npm install
 
-      - name: Install Cypress dependencies
+      - name: Instalar dependências do Cypress
         run: |
           cd ./cypress
           npm install
 
-      - name: Start API on Render
+      - name: Iniciar API no Render
         run: |
           cd ./api
           npm start &
         env:
           NODE_ENV: test
 
-      - name: Wait for API to be ready
+      - name: Aguardar a API ficar pronta
         run: npx wait-on https://api-teste-dados.onrender.com/api-docs --timeout 240000 # 4 minutos
 
-      - name: Run Cypress tests
+      - name: Executar testes do Cypress
         run: |
           cd ./cypress
           npx cypress run
