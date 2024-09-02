@@ -47,8 +47,11 @@ jobs:
         env:
           NODE_ENV: test
 
-      - name: Aguardar a API ficar pronta
-        run: npx wait-on https://api-teste-dados.onrender.com/api-docs --timeout 240000 # 4 minutos
+      - name: Aguardar a API estar pronta
+        run: |
+          npx wait-on --timeout 300000 --interval 5000 https://api-teste-dados.onrender.com/api-docs
+        env:
+          NODE_ENV: test
 
       - name: Executar testes do Cypress
         run: |
