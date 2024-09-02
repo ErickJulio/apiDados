@@ -51,7 +51,7 @@ async function convertDocxToPdf(inputFilePath, outputFilePath) {
 
 // Endpoint para conversão de Word para PDF
 app.post('/converter-docx-pdf', upload.single('file'), async (req, res) => {
-  // #swagger.tags = ['Converser']
+  // #swagger.tags = ['Converter Docx para PDF']
   /* 
     #swagger.parameters['file'] = {
       in: 'formData',
@@ -130,8 +130,9 @@ app.post('/converter-docx-pdf', upload.single('file'), async (req, res) => {
     res.status(500).send('Erro na conversão');
   }
 });
-// Gerar dados fictícios
+
 app.get('/gerar-dadosAleatorios', (req, res) => {
+  
   const nome = faker.name.findName();
   const cpf = faker.random.number({ min: 10000000000, max: 99999999999 }).toString();
   const dataNascimento = faker.date.between('1950-01-01', '2003-12-31').toLocaleDateString();

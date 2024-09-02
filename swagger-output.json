@@ -14,7 +14,7 @@
     "/converter-docx-pdf": {
       "post": {
         "tags": [
-          "Converser"
+          "Converter Docx para PDF"
         ],
         "description": "",
         "parameters": [
