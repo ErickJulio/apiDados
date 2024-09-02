@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - hml
   pull_request:
     branches:
       - main
+      - hml
 
 jobs:
   checkout_instalar_dependencias_api:
@@ -75,3 +77,21 @@ jobs:
       - name: Run Cypress Tests
         run: |
           npx cypress run
+
+  deploy_hml:
+    name: Deploy na HML
+    runs-on: ubuntu-latest
+    needs: executar_testes_cypress
+    if: github.ref == 'refs/heads/hml'
+    steps:
+      - name: Deploy to HML
+        run: echo "Deploy na HML" # Substituir pelo script de deploy real
+
+  deploy_main:
+    name: Deploy na Main
+    runs-on: ubuntu-latest
+    needs: executar_testes_cypress
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to Main
+        run: echo "Deploy na Main" # Substituir pelo script de deploy real
