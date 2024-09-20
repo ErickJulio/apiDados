@@ -1,4 +1,61 @@
-# apiDados
+# Documentação da API
+
+## Endpoints
+
+### 1. **Converter DOCX para PDF**
+   - **Método:** `POST /converter-docx-pdf`
+   - **Descrição:** Este endpoint recebe um arquivo `.docx` e converte-o para o formato PDF. O arquivo `.docx` é enviado no corpo da requisição e a resposta será o PDF gerado.
+   - **Uso típico:** Quando você precisa transformar documentos de texto formatados em `.docx` para PDF.
+
+### 2. **Gerar Dados Aleatórios**
+   - **Método:** `GET /gerar-dadosAleatorios`
+   - **Descrição:** Este endpoint gera e retorna dados aleatórios, como nome, CPF, endereço, entre outros. Pode ser usado para testes ou preenchimento de formulários.
+   - **Uso típico:** Para criar dados falsos para preencher campos de teste ou simulação de cenários.
+
+### 3. **Validar CPF**
+   - **Método:** `POST /validar-cpf`
+   - **Descrição:** Recebe um número de CPF no corpo da requisição e valida se ele é um CPF válido, retornando uma resposta sobre sua validade.
+   - **Uso típico:** Para garantir que um número de CPF informado por um usuário está no formato correto e é válido.
+
+### 4. **Validar CEP**
+   - **Método:** `POST /validar-cep`
+   - **Descrição:** Este endpoint verifica a validade de um CEP (Código de Endereçamento Postal) enviado no corpo da requisição e retorna se o CEP existe e está correto.
+   - **Uso típico:** Usado em formulários de endereço para validar se o CEP fornecido pelo usuário é válido.
+
+### 5. **Enviar SMS**
+   - **Método:** `POST /enviar-sms`
+   - **Descrição:** Permite o envio de mensagens SMS para um número de telefone fornecido. O corpo da requisição deve conter o número e o texto da mensagem.
+   - **Uso típico:** Enviar notificações, códigos de verificação ou mensagens de marketing diretamente para o telefone do usuário.
+
+### 6. **Login**
+   - **Método:** `POST /login`
+   - **Descrição:** Este endpoint recebe credenciais de login (usuário e senha) e, se as credenciais estiverem corretas, retorna um token de autenticação para acessar outras partes da API.
+   - **Uso típico:** Autenticar usuários que precisam acessar funcionalidades privadas da API.
+
+### 7. **Agendamentos**
+   - **Método:** `POST /api/agendamentos`
+   - **Descrição:** Utilizado para criar um novo agendamento. A requisição deve conter os detalhes do agendamento, como data, hora e serviço desejado.
+   - **Uso típico:** Para marcar compromissos ou reservar serviços através do sistema.
+
+### 8. **Esqueci Minha Senha**
+   - **Método:** `POST /esqueci-senha`
+   - **Descrição:** Quando um usuário esquece sua senha, este endpoint permite que ele solicite uma redefinição. Normalmente, envia um e-mail ou SMS com instruções de recuperação.
+   - **Uso típico:** Para usuários que esqueceram suas senhas e precisam redefini-las.
+
+### 9. **Inserir Dados**
+   - **Método:** `POST /inserir-dados`
+   - **Descrição:** Permite inserir dados personalizados na API. O corpo da requisição deve conter os dados que se deseja armazenar.
+   - **Uso típico:** Para adicionar novos registros ou informações ao banco de dados da API.
+
+---
+
+## Observações
+- **Autenticação:** Alguns endpoints podem requerer autenticação via token, especialmente os que lidam com dados sensíveis ou operações que alteram o estado da aplicação (como `/login` e `/api/agendamentos`).
+- **Validação de Entrada:** Certifique-se de que os dados enviados estão no formato correto para evitar erros de validação.
+
+
+
+
 # Documentação do Fluxo de Integração e Execução de Testes da API com Cypress
 
 ## Fluxo Geral
