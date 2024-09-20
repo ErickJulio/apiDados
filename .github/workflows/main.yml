@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repositório da API
+      - name: checkout repositório da API
         uses: actions/checkout@v2
         with:
           repository: 'ErickJulio/apiDados'
           path: './api'
 
-      - name: Checkout repositório do Cypress
+      - name: checkout repositório do Cypress
         uses: actions/checkout@v2
         with:
           repository: 'ErickJulio/testeConverterArquivoDocx'
@@ -30,12 +30,12 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Instalar dependências da API
+      - name: Instalar dependências API
         run: |
           cd ./api
           npm install
 
-      - name: Instalar dependências do Cypress
+      - name: Instalar dependências Cypress
         run: |
           cd ./cypress
           npm install
