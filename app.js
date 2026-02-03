@@ -15,7 +15,8 @@ const path = require('path');
 const fs = require('fs');
 const { Document } = require('docx');
 const { PDFDocument } = require('pdf-lib');
-const mammoth = require('mammoth'); // Certifique-se de importar a biblioteca 'mammoth'
+const mammoth = require('mammoth'); 
+
 const htmlToPdf = require('html-pdf');
 
 
