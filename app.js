@@ -19,6 +19,7 @@ const mammoth = require('mammoth'); // Certifique-se de importar a biblioteca 'm
 const htmlToPdf = require('html-pdf');
 
 
+
 const app = express();
 const port = 3000;
 
@@ -28,7 +29,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const upload = multer({ dest: 'uploads/' });
-// Função para converter HTML para PDF
+
 function convertHtmlToPdf(html, outputFilePath) {
   return new Promise((resolve, reject) => {
     htmlToPdf.create(html).toFile(outputFilePath, (err, res) => {
@@ -38,7 +39,7 @@ function convertHtmlToPdf(html, outputFilePath) {
   });
 }
 
-// Função para converter DOCX para PDF
+
 async function convertDocxToPdf(inputFilePath, outputFilePath) {
   try {
     const result = await mammoth.convertToHtml({ path: inputFilePath });
