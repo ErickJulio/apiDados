@@ -19,7 +19,7 @@ const mammoth = require('mammoth');
 const htmlToPdf = require('html-pdf');
 const app = express();
 const port = 3000;
-//teste
+
 app.use(cors()); // Use o middleware cors
 
 app.use(express.json());
